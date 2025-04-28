@@ -3,13 +3,13 @@
 ---
 
 ## Abstract
-This study investigates the association between elevated Gamma-Glutamyl Transpeptidase (Gamma-GTP) levels and the risk of developing metabolic diseases, specifically hyperglycemia and hypertension, in women. Using propensity score weighting methods and logistic regression, we estimate the causal effect of elevated Gamma-GTP on metabolic risk.
+This study investigates the association between elevated Gamma-Glutamyl Transpeptidase (Gamma-GTP) levels and the risk of developing metabolic diseases, specifically hyperglycemia and hypertension. Using propensity score weighting methods and logistic regression, we estimate the causal effect of elevated Gamma-GTP on metabolic risk.
 
 ---
 
 ## Introduction
 Gamma-GTP is traditionally regarded as a marker of liver dysfunction or alcohol consumption. However, emerging evidence suggests that elevated Gamma-GTP levels may be associated with metabolic disorders such as diabetes and hypertension. Despite this, the causal nature of the relationship remains unclear.  
-This study aims to explore whether Gamma-GTP can serve as a predictive marker for metabolic disease development in a female population.
+This study aims to explore whether Gamma-GTP can serve as a predictive marker for metabolic disease development in the general adult population.
 
 ---
 
@@ -17,7 +17,7 @@ This study aims to explore whether Gamma-GTP can serve as a predictive marker fo
 
 ### Data Source
 - 2023 Korean National Health Insurance Service health checkup data (de-identified)
-- Female participants only
+- Adult participants (including both men and women)
 - Variables used: Gamma-GTP levels, fasting glucose, blood pressure, demographics, health behavior factors
 
 ### Study Design
@@ -31,6 +31,7 @@ This study aims to explore whether Gamma-GTP can serve as a predictive marker fo
 - Propensity Score Modeling (logistic regression)
 - Inverse Probability of Treatment Weighting (IPTW)
 - Weighted logistic regression for outcome estimation
+- Confounders: age, sex, body weight, waist circumference, smoking status, alcohol consumption, total cholesterol
 - Sensitivity analysis with alternative Gamma-GTP cut-offs
 
 ---
@@ -51,7 +52,7 @@ This study aims to explore whether Gamma-GTP can serve as a predictive marker fo
 ---
 
 ## Discussion
-Our findings suggest that elevated Gamma-GTP levels may be significantly associated with an increased risk of hyperglycemia and hypertension in women.  
+Our findings suggest that elevated Gamma-GTP levels may be significantly associated with an increased risk of hyperglycemia and hypertension.  
 Gamma-GTP could potentially serve as an early marker for identifying individuals at higher metabolic risk.  
 Future longitudinal studies are warranted to validate these findings and explore causal pathways more deeply.
 
