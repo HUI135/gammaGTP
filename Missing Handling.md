@@ -102,3 +102,11 @@ df['X1'] = df['X1'].fillna(df['X1'].median())
 - 반복측정이면 ID 내 시간 흐름, cross-sectional이면 공변량 구조 활용  
 - 결측 indicator(flag)를 함께 모델에 포함시키면 MNAR 가능성에도 대응 가능  
 - 다중 대체(MICE)는 불확실성을 반영할 수 있는 가장 강력한 방법 중 하나임
+
+---
+
+## 🔗 함께 보면 좋은 자료
+
+- [Missing 처리 Python 예제 보기](./missing_handling_code.ipynb)
+- [Outlier Handling 정리 보기](./outlier_handling.md)
+- [Outlier 처리 Python 예제 보기](./outlier_handling_code.ipynb)
