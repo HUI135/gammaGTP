@@ -92,6 +92,6 @@
 
 ## 🔗 함께 보면 좋은 자료
 
-- [Outlier 처리 Python 예제 보기](./outlier_handling_code.ipynb)
+- [Outlier 처리 Python 예제 보기](./outlier_handling_example.ipynb)
 - [Missing Handling 정리 보기](./missing_handling.md)
-- [Missing 처리 Python 예제 보기](./missing_handling_code.ipynb)
+- [Missing 보간 Python 예제 보기](./missing_imputation_example.ipynb)
