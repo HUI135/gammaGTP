@@ -1,78 +1,112 @@
-# Gamma-GTP and Metabolic Risk Analysis
+# 🔬 Gamma-GTP와 대사질환 위험 분석
 
 ---
 
-## Abstract
-This study investigates the association between elevated Gamma-Glutamyl Transpeptidase (Gamma-GTP) levels and the risk of developing metabolic diseases, specifically hyperglycemia and hypertension. Using propensity score weighting methods and logistic regression, we estimate the causal effect of elevated Gamma-GTP on metabolic risk.
+## 📌 개요 (Abstract)
+
+본 연구는 감마글루타밀전이효소(Gamma-GTP) 수치 상승과 대사질환 발생 위험(고혈당 및 고혈압) 간의 연관성을 분석한다. 성향점수 가중치(Propensity Score Weighting)와 로지스틱 회귀 분석을 통해 Gamma-GTP 상승이 대사질환 위험에 미치는 인과적 효과를 추정하였다.
 
 ---
 
-## Introduction
-Gamma-GTP is traditionally regarded as a marker of liver dysfunction or alcohol consumption. However, emerging evidence suggests that elevated Gamma-GTP levels may be associated with metabolic disorders such as diabetes and hypertension. Despite this, the causal nature of the relationship remains unclear.  
-This study aims to explore whether Gamma-GTP can serve as a predictive marker for metabolic disease development in the general adult population.
+## 🧭 서론 (Introduction)
+
+Gamma-GTP는 전통적으로 간 기능 이상이나 음주와 관련된 지표로 사용된다. 그러나 최근 연구들에 따르면, 이 수치가 높을수록 당뇨병이나 고혈압과 같은 대사질환의 위험이 증가할 수 있다는 보고가 있다. 그럼에도 불구하고 이러한 연관성이 **인과적인 관계인지 여부는 불분명**하다.  
+본 연구는 **일반 성인 인구에서 Gamma-GTP가 대사질환 발생의 예측 지표로 활용될 수 있는지**를 확인하고자 한다.
 
 ---
 
-## Methods
+## 🧪 연구 방법 (Methods)
 
-### Data Source
-- 2023 Korean National Health Insurance Service health checkup data (de-identified)
-- Adult participants (including both men and women)
-- Variables used: Gamma-GTP levels, fasting glucose, blood pressure, demographics, health behavior factors
+### 🔹 데이터 출처
 
-### Study Design
-- Observational cross-sectional study
-- Treatment: Gamma-GTP ≥ 50 IU/L (high risk group)
-- Outcomes:
-  - Hyperglycemia (fasting glucose ≥ 100 mg/dL)
-  - Hypertension (systolic BP ≥ 130 mmHg or diastolic BP ≥ 80 mmHg)
+- 2023년도 국민건강보험공단 건강검진 데이터 (가명처리된 자료)  
+- 성인 남녀 포함  
+- 주요 변수: Gamma-GTP 수치, 공복혈당, 혈압, 인구통계 정보, 건강행태 관련 변수
 
-### Statistical Analysis
-- Propensity Score Modeling (logistic regression)
-- Inverse Probability of Treatment Weighting (IPTW)
-- Weighted logistic regression for outcome estimation
-- Confounders: age, sex, body weight, waist circumference, smoking status, alcohol consumption, total cholesterol
-- Sensitivity analysis with alternative Gamma-GTP cut-offs
+### 🔹 연구 설계
+
+- 관찰적 단면 연구 (Cross-sectional study)  
+- **처치군(Treatment):** Gamma-GTP ≥ 50 IU/L (고위험군)  
+- **결과 변수(Outcomes):**
+  - 고혈당: 공복혈당 ≥ 100 mg/dL  
+  - 고혈압: 수축기 혈압 ≥ 130 mmHg 또는 이완기 혈압 ≥ 80 mmHg
+
+### 🔹 통계 분석
+
+- 성향점수 모델링: 로지스틱 회귀 사용  
+- IPTW (Inverse Probability of Treatment Weighting) 적용  
+- 가중치를 반영한 로지스틱 회귀로 결과 추정  
+- 교란변수 조정: 나이, 성별, 체중, 허리둘레, 흡연 여부, 음주 여부, 총콜레스테롤  
+- 민감도 분석: 다양한 Gamma-GTP 컷오프 값(예: 60, 70 IU/L)으로 결과 반복 분석
+
+### 🔹 반복측정 데이터 처리
+
+일부 참가자는 동일 ID로 여러 시점(visit)의 데이터가 존재하였으며, 이를 반영하기 위한 전처리 과정을 적용하였다.
+
+- **시간 흐름을 고려한 보간(interpolation)** 적용:
+  - 동일 ID 내에서 시간 순으로 정렬 후 `.groupby('id') + .interpolate()` 방식으로 연속형 변수 보완
+  - 시계열적으로 비교적 부드럽게 변화하는 변수에 한해 적용 (예: 혈당, 체중, 혈압 등)
+  - 필요한 경우 `.ffill()` 및 `.bfill()`로 앞뒤 방향 보완
+
+- **보완 방안**:
+  - 초기값이 없어 보간이 불가능한 경우 또는 갑작스러운 변화가 의심되는 경우, 해당 항목에 **결측 플래그(flag)**를 생성하여 분석 시 추가 조정
+
+### 🔹 이상치 처리
+
+- **반복측정 데이터 기반 이상치 탐지**:
+  - 동일 ID 내 여러 시점이 존재할 경우, 개체 내 패턴을 활용하여 이상값 탐지 수행
+  - `.groupby('id')`를 기반으로 Z-score 또는 IQR 기준의 이상치 탐지
+  - 시계열적 패턴이 있는 경우, 이동 평균(rolling mean) 또는 보간값과의 편차를 비교하여 이상값 판별
+
+- **이상값 처리 방식**:
+  - 로그 변환, 윈저라이징(winsorizing), robust scaling 등의 기법 활용
+  - 원시(raw) 값을 보존하며, 이상값 여부를 나타내는 `*_outlier` 플래그 변수 추가하여 모델에 함께 투입
 
 ---
 
-## Results
+## 📊 분석 결과 (Results)
 
-### Baseline Characteristics
-- Description of baseline differences between groups before and after weighting
-- IPTW distribution plots
+### 🔸 기초 특성
 
-### Main Analysis
-- OR (Odds Ratio) for hyperglycemia and hypertension according to Gamma-GTP level
-- 95% Confidence Intervals and p-values
+- 가중치 적용 전후의 군 간 기초 특성 비교  
+- IPTW 분포 시각화 (Histogram 또는 Density Plot)
 
-### Sensitivity Analysis
-- Alternative Gamma-GTP thresholds tested (e.g., 60, 70 IU/L)
+### 🔸 주요 분석
 
----
+- Gamma-GTP 수치에 따른 고혈당 및 고혈압의 교차비(OR)  
+- 95% 신뢰구간(CI) 및 p-value 제공
 
-## Discussion
-Our findings suggest that elevated Gamma-GTP levels may be significantly associated with an increased risk of hyperglycemia and hypertension.  
-Gamma-GTP could potentially serve as an early marker for identifying individuals at higher metabolic risk.  
-Future longitudinal studies are warranted to validate these findings and explore causal pathways more deeply.
+### 🔸 민감도 분석
+
+- Gamma-GTP 컷오프 값을 60, 70 IU/L 등으로 바꾸어 반복 분석  
+- 결과의 일관성 검토
 
 ---
 
-## Repository Structure
+## 💬 고찰 (Discussion)
+
+본 연구 결과, **Gamma-GTP 수치 상승은 고혈당 및 고혈압 위험 증가와 유의하게 연관되어 있음**을 시사한다.  
+Gamma-GTP는 향후 **대사질환 고위험군을 조기 식별하는 바이오마커로 활용될 가능성**이 있다.  
+단면 자료의 한계로 인해 인과 해석에는 제한이 있으며, 후속적으로 **종단 연구를 통해 인과 경로를 검증할 필요**가 있다.
+
+---
+
+## 📁 프로젝트 구조 (Repository Structure)
 
 ```plaintext
 gammaGTP/
 │
-├── README.md       # Project description and outline
-├── data/            # Dummy or anonymized sample dataset
-├── notebook/        # Main analysis notebook (gammaGTP_analysis.ipynb)
-├── src/             # Preprocessing, modeling, visualization scripts
-├── results/         # Result tables and plots
-├── figures/         # Visualization outputs
-└── LICENSE          # MIT License
+├── README.md       # 프로젝트 설명 및 개요
+├── data/            # 더미 또는 익명화된 샘플 데이터셋
+├── notebook/        # 메인 분석 노트북 (gammaGTP_analysis.ipynb)
+├── src/             # 전처리, 모델링, 시각화 스크립트
+├── results/         # 분석 결과 표 및 수치
+├── figures/         # 시각화 이미지 출력
+└── LICENSE          # MIT 라이선스
 ```
 
 ---
 
-## License
-This project is licensed under the MIT License.
+## ⚖️ 라이선스 (License)
+본 프로젝트는 MIT 라이선스 하에 배포됩니다.
+
