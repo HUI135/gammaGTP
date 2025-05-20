@@ -107,6 +107,6 @@ df['X1'] = df['X1'].fillna(df['X1'].median())
 
 ## 🔗 함께 보면 좋은 자료
 
-- [Missing 처리 Python 예제 보기](./missing_handling_code.ipynb)
+- [Missing 보간 Python 예제 보기](./missing_imputation_code.ipynb)
 - [Outlier Handling 정리 보기](./outlier_handling.md)
 - [Outlier 처리 Python 예제 보기](./outlier_handling_code.ipynb)
